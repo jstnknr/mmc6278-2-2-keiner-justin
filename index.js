@@ -12,23 +12,28 @@ program
   .command("getQuote")
   .description("Retrieves a random quote")
   .action(async () => {
-    // TODO: Pull a random quote from the quotes.txt file
-    // console log the quote and author
-    // You may style the text with chalk as you wish
+    try {
+      const data = await fs.readFile(QUOTE_FILE, "utf-8");
+      const quotes = data.split("\n").filter(line => line.trim() !== "");
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      const [quote, author] = quotes[randomIndex].split("|");
+      console.log(chalk.green(`"${quote}" - ${author}`));
+    } catch (err) {
+      console.error(chalk.red("Could not retrieve quotes. Please make sure the quotes.txt file exists."));
+    }
   });
 
 program
   .command("addQuote <quote> [author]")
   .description("adds a quote to the quote file")
   .action(async (quote, author) => {
-    // TODO: Add the quote and author to the quotes.txt file
-    // If no author is provided,
-    // save the author as "Anonymous".
-    // After the quote/author is saved,
-    // alert the user that the quote was added.
-    // You may style the text with chalk as you wish
-    // HINT: You can store both author and quote on the same line using
-    // a separator like pipe | and then using .split() when retrieving
+    try {
+      const newQuote = `${quote}|${author}\n`;
+      await fs.appendFile(QUOTE_FILE, newQuote);
+      console.log(chalk.blue(`Quote added: "${quote}" - ${author}`));
+    } catch (err) {
+      console.error(chalk.red("This quote could not be added."));
+    }
   });
 
 program.parse();
