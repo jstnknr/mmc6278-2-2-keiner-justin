@@ -26,7 +26,7 @@ program
 program
   .command("addQuote <quote> [author]")
   .description("adds a quote to the quote file")
-  .action(async (quote, author) => {
+  .action(async (quote, author = "Anonymous") => {
     try {
       const newQuote = `${quote}|${author}\n`;
       await fs.appendFile(QUOTE_FILE, newQuote);
